@@ -1,74 +1,124 @@
+
 # ADMET Prediction under Scaffold Split with an Agentic Candidate Filter
 
-## Project Status
+## Current Progress
 
-### Completed
+### Phase 1: Environment & Infrastructure — COMPLETE
+- Google Colab environment configured
+- Google Drive project storage configured
+- GitHub repository configured
+- Project directory structure created
+- Dependencies installed and verified
 
-- [x] Google Drive and GitHub project setup
-- [x] Environment setup and dependency verification
-- [x] Dataset acquisition
-- [x] Raw datasets preserved
-- [x] Initial data audit
-- [x] Canonical SMILES processing
-- [x] Duplicate molecule analysis
-- [x] Conflicting-label analysis
-- [x] Data cleaning
-- [x] Cleaned datasets saved
-- [x] Bemis-Murcko scaffold extraction implemented
-- [x] Acyclic molecule grouping handled
-- [x] Scaffold splitting implemented
-- [x] Solubility scaffold split generated (Seed 42)
-- [x] Split sizes verified
-- [x] Scaffold leakage audit passed
+### Phase 2: Dataset Acquisition & Cleaning — COMPLETE
 
-### Dataset Summary
+Datasets:
+- Solubility (AqSolDB): 9980 molecules
+- Lipophilicity: 4200 molecules
+- AMES: 7255 molecules
+- BBB: 1965 molecules
 
-| Dataset | Samples | Task |
-|---|---:|---|
-| Solubility | 9980 | Regression |
-| Lipophilicity | 4200 | Regression |
-| AMES | 7255 | Classification |
-| BBB | 1965 | Classification |
-| Total | 23400 | |
+Total cleaned molecules: 23400
 
-### Current Experimental Split
+Cleaning:
+- Invalid SMILES removed
+- Canonical SMILES generated
+- Duplicate molecules handled
+- Conflicting BBB labels removed
+- Raw datasets preserved
 
-Dataset: Solubility
+### Phase 3: Data Splitting & Leakage Audit — COMPLETE
 
-Split strategy: Bemis-Murcko Scaffold Split
+Split strategies:
+- Random split: 80/10/10
+- Bemis-Murcko scaffold split: 80/10/10
 
-Seed: 42
+Seeds:
+- 42
+- 123
+- 2026
 
-| Split | Samples | Percentage |
-|---|---:|---:|
-| Train | 7984 | 80.00% |
-| Validation | 998 | 10.00% |
-| Test | 998 | 10.00% |
+Total configurations: 24
 
-### Leakage Audit
+Audit results:
+- 24/24 configurations passed
+- No molecular overlap between train, validation, and test
+- No scaffold overlap in scaffold splits
 
-| Comparison | Scaffold Overlap | Result |
-|---|---:|---|
-| Train vs Validation | 0 | PASS |
-| Train vs Test | 0 | PASS |
-| Validation vs Test | 0 | PASS |
+Audit report:
+results/experiments/split_audit_all_24_configurations.csv
 
-### Current Stage
+### Phase 4: Feature Engineering — COMPLETE
 
-Data preprocessing and experimental split preparation.
+Method:
+- RDKit 2D molecular descriptors
+- Initial descriptors: 217
 
-### Next Steps
+Constant feature removal:
 
-- [ ] Implement random splitting
-- [ ] Validate random split implementation
-- [ ] Generate random and scaffold splits for all four datasets
-- [ ] Use three random seeds: 42, 123, 2026
-- [ ] Perform molecule and scaffold leakage audits
-- [ ] Save split files and metadata
-- [ ] Begin baseline model experiments
+| Dataset | Initial Features | Removed | Remaining |
+|---------|-----------------|---------|-----------|
+| Solubility | 217 | 2 | 215 |
+| Lipophilicity | 217 | 9 | 208 |
+| AMES | 217 | 2 | 215 |
+| BBB | 217 | 6 | 211 |
 
-## Storage
+Missing descriptor values identified and preserved for handling
+during model training using train-only imputation.
 
-Raw data, cleaned data, experimental splits, artifacts, and results are stored in Google Drive.
+Processed feature matrices saved:
 
-Code, notebooks, and documentation are version-controlled using GitHub.
+data/processed/descriptors/
+- solubility_descriptors.csv
+- lipophilicity_descriptors.csv
+- ames_descriptors.csv
+- bbb_descriptors.csv
+
+### Current Phase: XGBoost Baseline Modelling
+
+Next task:
+- Start with Solubility
+- Random split
+- Seed 42
+- XGBoost regression
+
+Pipeline:
+1. Load saved descriptor matrix
+2. Load corresponding train/validation/test split
+3. Separate features, target, and SMILES
+4. Median imputation fitted only on training data
+5. Train XGBoost
+6. Model selection using validation set
+7. Evaluate once on test set
+8. Calculate MAE, RMSE, and R2
+9. Save model and results
+
+After pipeline verification:
+- Reuse pipeline for remaining datasets
+- Random and scaffold splits
+- All three seeds
+
+### Future Phases
+
+1. XGBoost baseline experiments
+2. SMILES LSTM
+3. Compact GCN
+4. Random vs scaffold performance comparison
+5. Model comparison
+6. Candidate pool preparation
+7. Candidate overlap audit
+8. Agentic screening system
+9. Screening budget experiments
+10. Streamlit dashboard
+11. Final analysis and report
+
+## Research Scope
+
+- Four ADMET endpoints
+- Two deep learning models: SMILES LSTM and compact GCN
+- XGBoost descriptor baseline
+- Random and scaffold splits
+- Three seeds
+- Agentic candidate filtering and budget evaluation
+
+No transformers, molecular generators, or reinforcement learning planned.

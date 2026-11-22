@@ -1,0 +1,2 @@
+Phase,Experiment,Dataset,Split,Seed,Status,Notes
+Feature Engineering,RDKit 2D Descriptors,All 4 datasets,N/A,N/A,Completed,Generated 217 descriptors per molecule. Removed constant features dataset-wise. Feature matrices saved to data/processed/descriptors.
